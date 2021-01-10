@@ -11,27 +11,13 @@ class Box():
 # both parameters are tuples of xy coordinates relative to the origin, like in range [0,466]. the img parameter is for debugging by drawing on the image
 # returns a tuple of booleans. The first is whether or not we try to spin counter clockwise, and the second is whether or not we press spacebar
 def getMovementDecision(paddle_location, target_location, origin=None, img=None):
-    target_angle = math.atan((target_location[1]-466//2)/(target_location[0]-465//2))
-    print(target_angle)
-    if target_location[0] < 465//2:
-        target_angle += math.pi
-    current_angle = math.atan((paddle_location[1]-466//2)/(paddle_location[0]-465//2))
-
-    if(paddle_location[0] < 465//2):
-        current_angle += math.pi
-
         # we need the diff between paddle_location and target_location
         # dot product will be positive if they're in the same direction, 0 if perpendicular, and negative if in opposite directions
     dotprod = dot(paddle_location, target_location)
-
-    target_angle = (target_angle + 2*math.pi) % (2*math.pi)
         # this point is 90 degrees counter clockwise of target angle. If the current angle is in the same direction, we need to press D to go clockwise, else we need to press A
     
     #TODO use rotation matrix instead of converting to and from angles
     ccw_ref_point = get_rotated_vector(target_location,math.pi/2)#(50*math.cos(target_angle+math.pi/2)+465//2, 50*math.sin(target_angle+math.pi/2)+466//2)
-    if img!=None:
-        cv2.circle(img, (int(ccw_ref_point[0])+origin.left, int(ccw_ref_point[1])+origin.top), 10,(255,255,0),-1)
-
     dot2 = dot(ccw_ref_point, paddle_location)
     if dotprod>0:
         if dot2>0:
