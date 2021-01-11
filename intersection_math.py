@@ -14,13 +14,25 @@ def getLineCircleIntersection(delta, center):
     neg4ac = -4*(a*a+1)*(b**2-2*b*d+d**2+c**2-e**2)
     if bsq + neg4ac > 0:  # two solutions
         x1=(negb+math.sqrt(bsq+neg4ac))/(2*(a**2+1))#right side x coord
-        x2=(negb-math.sqrt(bsq+neg4ac))/(2*(a**2+1))#left side x coord\
-        xdist1 = abs(x1-center[0])
-        xdist2 = abs(x2-center[0])
-        if(xdist1<=xdist2):
-            return (x1,x1*a+b)
+        x2=(negb-math.sqrt(bsq+neg4ac))/(2*(a**2+1))#left side x coord
+        if a<=1:
+            xdist1 = abs(x1-center[0])
+            xdist2 = abs(x2-center[0])
+            if(xdist1<=xdist2):
+                return (x1,x1*a+b)
+            else:
+                return (x2,x2*a+b)
         else:
-            return (x2,x2*a+b)
+            y1=a*x1+b
+            y2=a*x2+b
+            ydist1 = abs(y1-center[1])
+            ydist2 = abs(y2-center[1])
+            if(ydist1<=ydist2):
+                return (x1,x1*a+b)
+            else:
+                return (x2,x2*a+b)
+
+
     elif bsq + neg4ac == 0:  # one solutions
         x = negb/(2*(a**2+1))
         return (x,x*a+b)#x*a+b
@@ -53,10 +65,12 @@ def getIntersection(delta, center):
             #after we know the y intercept, if it is too high then ma
             if yint > 466-76/2:  # intersection with bottom (the 76/2 is half the height of kanye's head, because that hits the edge, not the center)
                 d = (d[0], -d[1])
-                c = (c[0]+(466-76/2-c[1])/slope, 466-76/2)#center is at the bottom and wherever the new x is
+                if slope!=0:#janky bandaid fix, figure out why the slope is zero when it's hitting a vertical wall
+                    c = (c[0]+(466-76/2-c[1])/slope, 466-76/2)#center is at the bottom and wherever the new x is
             elif yint < 76/2: #intersection with top of map
                 d = (d[0], -d[1])#flip y velocity
-                c =(c[0]+(76/2-c[1])/slope, 76/2)#center is at the top and wherever the new x is
+                if slope!=0:
+                    c =(c[0]+(76/2-c[1])/slope, 76/2)#center is at the top and wherever the new x is
             else:  # bouncing off a side wall
                 d = (-d[0], d[1])
                 c = (56/2 if d[0] < 0 else 465-56/2, yint)
