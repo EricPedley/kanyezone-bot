@@ -1,5 +1,5 @@
 #https://stackoverflow.com/a/23468236/14587004
-
+#https://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
 import ctypes
 SendInput = ctypes.windll.user32.SendInput
 
