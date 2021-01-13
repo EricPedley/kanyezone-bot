@@ -29,6 +29,7 @@ def getMovementDecision(paddle_location, target_location, origin=None, img=None)
         else:
             return False,False
     else:#press space then move
+        print(paddle_location,target_location)
         if dot2>0:
             return False,True
         else:

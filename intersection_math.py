@@ -1,14 +1,14 @@
 import math
 
 # returns the x and y coords of the intersection with a circle
-def getLineCircleIntersection(delta, center):
+def getLineCircleIntersection(delta, center,radius=39):
     if delta[0]==0:
         delta=(1e-10,delta[1])
     a = delta[1]/delta[0]  # slope of line
     b = center[1]-a*center[0]  # y intercept of line
     c = 465//2  # canvas width/2
     d = 466//2  # canvas height/2
-    e = 39  # circle radius
+    e = radius  # circle radius
     negb = -2*(a*(b-d)-c)
     bsq = negb**2
     neg4ac = -4*(a*a+1)*(b**2-2*b*d+d**2+c**2-e**2)
@@ -41,11 +41,11 @@ def getLineCircleIntersection(delta, center):
 
 # kanye head is 56x76
 
-def getIntersection(delta, center):
+def getIntersection(delta, center,radius=39):
     d=delta
     c=center
     for i in range(10):  # maximum iterations is 5 before it gives up trying to find an intersect
-        intersection = getLineCircleIntersection(d, c)
+        intersection = getLineCircleIntersection(d, c,radius)
         # the following conditions checks whether there are intersections and whether one of them is
         if intersection != None:
             if (intersection[0] > c[0]) == (d[0] > 0) or (intersection[0] > c[0]) == (d[0] > 0):
