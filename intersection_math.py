@@ -41,10 +41,10 @@ def getLineCircleIntersection(delta, center,radius=39):
 
 # kanye head is 56x76
 
-def getIntersection(delta, center,radius=39):
+def getIntersection(delta, center,radius=39,num_bounces=3):
     d=delta
     c=center
-    for i in range(10):  # maximum iterations is 5 before it gives up trying to find an intersect
+    for i in range(num_bounces):  # maximum iterations is 5 before it gives up trying to find an intersect
         intersection = getLineCircleIntersection(d, c,radius)
         # the following conditions checks whether there are intersections and whether one of them is
         if intersection != None:
