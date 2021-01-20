@@ -37,6 +37,8 @@ minradius=39
 waiting_on_movement=False
 prev_time=time()
 
+def distsq(a,b):
+    return (a[0]-b[0])**2+(a[1]-b[1])**2
 
 img_holder = [None]#array with one element that holds the latest cropped screenshot of the game window
 
@@ -91,7 +93,7 @@ while(True):
 
 
             if do_input:
-                if dist(paddleCenter,prev_paddle_pos)<1.8*radius:
+                if distsq(paddleCenter,prev_paddle_pos)<3.24*radius*radius:#comparing squared distances so we don't have to import math for a sqrt function
                     waiting_on_movement=False
                 do_move_counter_clockwise,do_press_space = getMovementDecision(paddleCenter,intersection)
                 #don't press space if:
