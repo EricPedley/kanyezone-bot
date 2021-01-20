@@ -2,11 +2,10 @@ import pyautogui
 import numpy as np
 import cv2
 from keyinput import pressKey, releaseKey
-import random
 from intersection_math import getIntersection
 from movement_math import getMovementDecision
-import math
 from time import time
+import _thread
 # kanye head is 56x76
 origin = pyautogui.locateOnScreen("zone.png")
 
@@ -29,10 +28,6 @@ def findImageCenter(background,img):    # https://opencv-python-tutroals.readthe
 
     center = (top_left[0]+w//2, top_left[1]+h//2)
     return (center,min_val)#the second value is kinda like a confidence value. For kanye it should be above 4 million
-def dist(a,b):
-    return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
-def distsq(a,b):
-    return (a[0]-b[0])**2+(a[1]-b[1])**2
 
 do_input = True
 prev_paddle_pos = (233,200)
@@ -40,17 +35,28 @@ prev_movement_decision = (False,False)
 prev_intersection=(0,0)
 minradius=39
 waiting_on_movement=False
+prev_time=time()
+
+
+img_holder = [None]#array with one element that holds the latest cropped screenshot of the game window
+
+def update_img():
+    while(True):
+        screenshot = pyautogui.screenshot()
+        screenshot = np.array(screenshot)
+        screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
+        offsetX=-190
+        offsetY=-190
+        img_holder[0] = screenshot[origin.top+offsetY:origin.top+offsetY+466,origin.left+offsetX:origin.left+offsetX+465]#crops image to only the game screen
+
+_thread.start_new_thread(update_img,())
 while(True):
-
-    screenshot = pyautogui.screenshot()
-    prev_time=time()
-    screenshot = np.array(screenshot)
-
-    screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
-    offsetX=-190
-    offsetY=-190
-    img = screenshot[origin.top+offsetY:origin.top+offsetY+466,origin.left+offsetX:origin.left+offsetX+465]#crops image to only the game screen
-
+    img=img_holder[0]
+    if type(img)==type(None):#using types so we don't have to compare every pixel to None by using any
+        continue
+    curr=time()
+    print(curr-prev_time)
+    prev_time=curr
     radius=minradius
     for i in range(minradius,minradius+20):
         x=465//2+i
