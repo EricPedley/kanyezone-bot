@@ -6,12 +6,10 @@ import random
 from intersection_math import getIntersection
 from movement_math import getMovementDecision
 import math
-from time import time
+from time import time,sleep
+from windowcapture import getWindowScreenshot
 # kanye head is 56x76
-origin = pyautogui.locateOnScreen("zone.png")
-
-print(origin)
-#origin = Box{"left":origin.left+10,"top":origin.top+10}
+#origin = pyautogui.locateOnScreen("zone.png")
 prevpos = None
 
 
@@ -40,18 +38,33 @@ prev_movement_decision = (False,False)
 prev_intersection=(0,0)
 minradius=39
 waiting_on_movement=False
+#this should be able to be dynamic instead of hard-coded in case it's a different browser. the static method returns none for some reason
+winname = "Don't let Kanye into his zone: Kanye Zone - Google Chrome"#WindowCapture.get_kanye_window_name()
+origin = findImageCenter(getWindowScreenshot(winname),cv2.imread("zone.png"))[0]
+
+offsetX=-210
+offsetY=-210
+origin = (int(origin[0])+offsetX,int(origin[1])+offsetY)
+print(origin)
 while(True):
+    #returns black screen, see this: https://stackoverflow.com/questions/59350839/capturing-screenshots-with-win32api-python-returns-black-image
+    screenshot=getWindowScreenshot(winname)
+    #cv2.imshow("raw screenshot",screenshot)
+    #print(time())
+    print(screenshot.shape)
 
-    screenshot = pyautogui.screenshot()
-    prev_time=time()
-    screenshot = np.array(screenshot)
+    img = screenshot[origin[1]:origin[1]+466,origin[0]:origin[0]+465]
+    cv2.imshow("raw img",img)
+    #old way using pyautogui
+    #screenshot = np.array(pyautogui.screenshot())
 
-    screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
-    offsetX=-190
-    offsetY=-190
-    img = screenshot[origin.top+offsetY:origin.top+offsetY+466,origin.left+offsetX:origin.left+offsetX+465]#crops image to only the game screen
+    #screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
+    #offsetX=-190
+    #offsetY=-190
+    #img = screenshot[origin.top+offsetY:origin.top+offsetY+466,origin.left+offsetX:origin.left+offsetX+465]#crops image to only the game screen
 
     radius=minradius
+
     for i in range(minradius,minradius+20):
         x=465//2+i
         (b,g,r) = img[466//2][x]
@@ -64,7 +77,7 @@ while(True):
 
 
     (kanye_head_center,kanye_conf) = findImageCenter(img,kanyehead)
-    if kanye_conf<4000000:
+    if kanye_conf<4000000:#this is what the confidence is usually when it picks out the silhoutte instead of kanye himself
         continue
     topleft= (int(kanye_head_center[0]-56/2),int(kanye_head_center[1]-76/2))
     botright=(int(kanye_head_center[0]+56/2),int(kanye_head_center[1]+76/2))
@@ -117,8 +130,5 @@ while(True):
         break
     elif key == 112:#p key
         do_input = not do_input
-    current_time=time()
-    #print(current_time-prev_time)
-    prev_time=current_time
 
 print("exiting!")

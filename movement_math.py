@@ -10,7 +10,7 @@ class Box():
         self.top=t
 # both parameters are tuples of xy coordinates relative to the origin, like in range [0,466]. the img parameter is for debugging by drawing on the image
 # returns a tuple of booleans. The first is whether or not we try to spin counter clockwise, and the second is whether or not we press spacebar
-def getMovementDecision(paddle_location, target_location, origin=None, img=None):
+def getMovementDecision(paddle_location,target_location, origin=None, img=None):
     canvas_center = (465//2,466//2)
         # the relative coordinates treat the canvas center like the origin
     relative_paddle = (paddle_location[0]-canvas_center[0],paddle_location[1]-canvas_center[1])
@@ -29,7 +29,7 @@ def getMovementDecision(paddle_location, target_location, origin=None, img=None)
         else:
             return False,False
     else:#press space then move
-        print(paddle_location,target_location)
+        #print(paddle_location,target_location)
         if dot2>0:
             return False,True
         else:
